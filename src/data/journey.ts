@@ -1,0 +1,63 @@
+import { TimelineMilestone } from '../types';
+
+export const journeyTimeline: TimelineMilestone[] = [
+  {
+    year: '2021',
+    period: '2021',
+    title: 'Post Graduate Diploma in Advanced Computing (PG-DAC)',
+    organization: 'CDAC',
+    description: 'Intensive foundation in modern software engineering, advanced data structures, algorithms, database architectures, and full-stack development principles.',
+    highlights: [
+      'Mastered object-oriented programming, data structures, and database systems',
+      'Engineered distributed full-stack application projects',
+      'Developed passion for human-centric frontend architecture and interaction design',
+    ],
+    technologies: ['Data Structures', 'Algorithms', 'JavaScript', 'Web Technologies', 'Software Engineering'],
+    type: 'education',
+  },
+  {
+    year: '2022',
+    period: 'Jan 2022',
+    title: 'Professional Software Engineering Journey Begins',
+    organization: 'Cybage Software Pvt. Ltd.',
+    role: 'Software Engineer',
+    description: 'Transitioned into enterprise software engineering, taking direct ownership of production React modules, UI architecture, and REST API integrations.',
+    highlights: [
+      'Onboarded to enterprise-grade web development projects',
+      'Implemented component-driven methodologies for core client interfaces',
+      'Established high quality bar with Jest and React Testing Library standards',
+    ],
+    technologies: ['React.js', 'JavaScript', 'CSS3', 'REST APIs', 'Git'],
+    type: 'career',
+  },
+  {
+    year: '2022 → PRESENT',
+    period: 'Jan 2022 – Present (4+ Years)',
+    title: 'Software Engineer (React & Frontend)',
+    organization: 'Cybage Software Pvt. Ltd.',
+    role: 'Software Engineer',
+    location: 'Pune, India',
+    description: 'Leading frontend engineering on high-impact healthcare and enterprise platforms (Tango Care, Marco Technologies). Spearheading scalable component architecture, 45% page load optimizations, and 85%+ test coverage.',
+    highlights: [
+      'Delivered 12+ core production features across healthcare and enterprise client portfolios',
+      'Achieved 45% page load improvement through lazy loading, code splitting, and memoization',
+      'Maintained 85%+ code coverage with Jest and React Testing Library',
+      'Boosted sprint velocity by 20% by creating reusable Material UI design system components',
+      'Integrated AI-assisted workflows (Claude & Copilot) paired with rigorous code review standards',
+      'Collaborated closely in Agile/Scrum ceremonies, cross-functional standups, and client syncs',
+    ],
+    technologies: [
+      'React.js',
+      'TypeScript',
+      'Redux Toolkit',
+      'Material UI',
+      'REST APIs',
+      'Jest',
+      'React Testing Library',
+      'Azure DevOps',
+      'Claude',
+      'GitHub Copilot',
+    ],
+    type: 'career',
+  },
+];
