@@ -33,12 +33,11 @@ describe('Vidhya Charpe Portfolio Component Tests', () => {
     expect(screen.getByText(/LIVE EXPERIENCE ↗/i)).toBeInTheDocument();
   });
 
-  it('renders Skills Toolbox and allows searching for React', () => {
+  it('renders Skills Toolbox and all skill categories', () => {
     render(<SkillsToolbox />);
     expect(screen.getAllByText(/Frontend Core/i).length).toBeGreaterThan(0);
-    const searchInput = screen.getByPlaceholderText(/Search skill/i);
-    fireEvent.change(searchInput, { target: { value: 'Redux' } });
     expect(screen.getAllByText(/State Management/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/UI & Design Systems/i).length).toBeGreaterThan(0);
   });
 
   it('handles interactive BugFixGame workflow correctly', () => {

@@ -12,9 +12,7 @@ import {
   Cpu,
   Wrench,
   Bot,
-  Search,
   Sparkles,
-  X,
   Briefcase,
   CheckCircle2,
   Layers,
@@ -35,8 +33,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export const SkillsToolbox: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedSkill, setSelectedSkill] = useState<EnhancedSkill | null>(null);
 
   // Top core competencies for quick overview
@@ -48,25 +44,6 @@ export const SkillsToolbox: React.FC = () => {
     { name: 'Jest & RTL Test Coverage', level: '92%', yoe: '4+ Yrs', color: 'from-emerald-500 to-teal-400' },
     { name: 'Performance & 45% Boost', level: '95%', yoe: '4+ Yrs', color: 'from-amber-400 to-orange-500' },
   ];
-
-  const filteredCategories = skillCategories.filter((cat) => {
-    if (activeCategory !== 'all' && cat.id !== activeCategory) return false;
-    if (!searchQuery.trim()) return true;
-
-    const query = searchQuery.toLowerCase();
-    return (
-      cat.title.toLowerCase().includes(query) ||
-      cat.description.toLowerCase().includes(query) ||
-      cat.skills.some(
-        (s) =>
-          s.name.toLowerCase().includes(query) ||
-          s.description.toLowerCase().includes(query) ||
-          s.tags?.some((t) => t.toLowerCase().includes(query))
-      )
-    );
-  });
-
-  const totalSkillsCount = skillCategories.reduce((acc, c) => acc + c.skills.length, 0);
 
   const handleSelectSkill = (skill: EnhancedSkill) => {
     setSelectedSkill(skill);
@@ -135,75 +112,6 @@ export const SkillsToolbox: React.FC = () => {
             ))}
           </div>
         </motion.div>
-
-        {/* Filter Bar & Interactive Search */}
-        <div className="space-y-4">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-            {/* Category Filter Chips */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
-              <button
-                onClick={() => {
-                  setActiveCategory('all');
-                  trackSkillsInteraction('all');
-                }}
-                className={`px-4 py-2 text-xs font-mono rounded-xl transition-all duration-200 shrink-0 flex items-center gap-1.5 ${
-                  activeCategory === 'all'
-                    ? 'bg-brand-violet text-white font-bold shadow-glow-sm border border-brand-cyan/40'
-                    : 'bg-surface-elevated text-slate-300 hover:text-white hover:bg-surface-card border border-white/10'
-                }`}
-              >
-                <span>ALL</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-black/30 text-[10px]">
-                  {totalSkillsCount}
-                </span>
-              </button>
-
-              {skillCategories.map((category) => {
-                const isSelected = activeCategory === category.id;
-                return (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      setActiveCategory(category.id);
-                      trackSkillsInteraction(category.id);
-                    }}
-                    className={`px-4 py-2 text-xs font-mono rounded-xl transition-all duration-200 shrink-0 flex items-center gap-1.5 ${
-                      isSelected
-                        ? 'bg-brand-violet text-white font-bold shadow-glow-sm border border-brand-cyan/40'
-                        : 'bg-surface-elevated text-slate-300 hover:text-white hover:bg-surface-card border border-white/10'
-                    }`}
-                  >
-                    <span>{category.title.toUpperCase()}</span>
-                    <span className="px-1.5 py-0.2 rounded-full bg-black/30 text-[10px]">
-                      {category.skills.length}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Search Input with Reset Button */}
-            <div className="relative w-full lg:w-72 shrink-0">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search skills (e.g. Redux, Jest)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 text-xs font-mono bg-surface-elevated/90 border border-white/10 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-brand-violet/70 transition-all shadow-inner"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  aria-label="Clear search"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Selected Skill Quick Detail Inspector Drawer */}
         <AnimatePresence>
@@ -284,103 +192,82 @@ export const SkillsToolbox: React.FC = () => {
         </AnimatePresence>
 
         {/* Categories Grid */}
-        {filteredCategories.length === 0 ? (
-          <div className="py-16 text-center rounded-3xl glass-panel border border-white/10 space-y-4">
-            <p className="text-slate-400 font-mono text-sm">
-              No skills found matching "<span className="text-white">{searchQuery}</span>"
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setActiveCategory('all');
-              }}
-              className="px-4 py-2 rounded-xl text-xs font-mono text-brand-sky bg-brand-violet/20 hover:bg-brand-violet/40 border border-brand-violet/30 transition-all"
-            >
-              Reset Filters
-            </button>
-          </div>
-        ) : (
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-40px' }}
-            className={`grid grid-cols-1 ${
-              activeCategory === 'all'
-                ? 'md:grid-cols-2 lg:grid-cols-4'
-                : 'md:grid-cols-2 lg:grid-cols-3'
-            } gap-6`}
-          >
-            {filteredCategories.map((cat) => {
-              const Icon = iconMap[cat.iconName] || Layout;
-              return (
-                <motion.div
-                  key={cat.id}
-                  variants={fadeUp}
-                  className="rounded-3xl glass-panel-elevated p-6 sm:p-7 border border-white/10 hover:border-brand-violet/40 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden"
-                >
-                  {/* Subtle top glow line */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-violet/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-40px' }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          {skillCategories.map((cat) => {
+            const Icon = iconMap[cat.iconName] || Layout;
+            return (
+              <motion.div
+                key={cat.id}
+                variants={fadeUp}
+                className="rounded-3xl glass-panel-elevated p-6 sm:p-7 border border-white/10 hover:border-brand-violet/40 transition-all duration-300 flex flex-col justify-between group shadow-xl relative overflow-hidden"
+              >
+                {/* Subtle top glow line */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-violet/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                  <div>
-                    {/* Header */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-3 rounded-2xl bg-brand-violet/15 text-brand-sky group-hover:bg-brand-violet/30 group-hover:text-white transition-all shadow-sm">
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-extrabold text-white text-lg tracking-tight">
-                          {cat.title}
-                        </h3>
-                        <p className="text-[11px] font-mono text-slate-400 line-clamp-1">
-                          {cat.skills.length} Core Technologies
-                        </p>
-                      </div>
+                <div>
+                  {/* Header */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-3 rounded-2xl bg-brand-violet/15 text-brand-sky group-hover:bg-brand-violet/30 group-hover:text-white transition-all shadow-sm">
+                      <Icon className="w-5 h-5" />
                     </div>
-
-                    <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                      {cat.description}
-                    </p>
-
-                    {/* Skill Pills */}
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {cat.skills.map((skill) => {
-                        const isSelected = selectedSkill?.name === skill.name;
-                        return (
-                          <div
-                            key={skill.name}
-                            onClick={() => handleSelectSkill(skill)}
-                            className="cursor-pointer"
-                          >
-                            <TechBadge
-                              name={skill.name}
-                              variant={isSelected ? 'accent' : skill.highlight ? 'glow' : 'subtle'}
-                              size="sm"
-                              className={
-                                isSelected
-                                  ? 'ring-2 ring-brand-cyan border-brand-cyan shadow-glow-cyan'
-                                  : ''
-                              }
-                            />
-                          </div>
-                        );
-                      })}
+                    <div>
+                      <h3 className="font-extrabold text-white text-lg tracking-tight">
+                        {cat.title}
+                      </h3>
+                      <p className="text-[11px] font-mono text-slate-400 line-clamp-1">
+                        {cat.skills.length} Core Technologies
+                      </p>
                     </div>
                   </div>
 
-                  {/* Card Footer Hint */}
-                  <div className="pt-4 mt-5 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-500">
-                    <span className="flex items-center gap-1 text-slate-400 group-hover:text-brand-sky transition-colors">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                      Production Tested
-                    </span>
-                    <span className="text-[10px] text-brand-violet">Click to inspect</span>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    {cat.description}
+                  </p>
+
+                  {/* Skill Pills */}
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {cat.skills.map((skill) => {
+                      const isSelected = selectedSkill?.name === skill.name;
+                      return (
+                        <div
+                          key={skill.name}
+                          onClick={() => handleSelectSkill(skill)}
+                          className="cursor-pointer"
+                        >
+                          <TechBadge
+                            name={skill.name}
+                            variant={isSelected ? 'accent' : skill.highlight ? 'glow' : 'subtle'}
+                            size="sm"
+                            className={
+                              isSelected
+                                ? 'ring-2 ring-brand-cyan border-brand-cyan shadow-glow-cyan'
+                                : ''
+                            }
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        )}
+                </div>
+
+                {/* Card Footer Hint */}
+                <div className="pt-4 mt-5 border-t border-white/5 flex items-center justify-between text-[11px] font-mono text-slate-500">
+                  <span className="flex items-center gap-1 text-slate-400 group-hover:text-brand-sky transition-colors">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                    Production Tested
+                  </span>
+                  <span className="text-[10px] text-brand-violet">Click to inspect</span>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
     </section>
   );
